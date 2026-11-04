@@ -143,13 +143,15 @@ Open http://127.0.0.1:8094. Stop both servers with Ctrl-C when finished. If usin
 
 ## Skills demonstrated
 
-- Drupal custom module development for Drupal 10/11 and PHP object-oriented programming.
-- Form API, routes, menus, restricted permissions and configuration schema.
-- Services, constructor dependency injection, container factories and Drush autowiring.
-- Entity/Field APIs, installable node/field/display configuration and Views page/block configuration.
-- Cron hooks, Queue API plugins, locking, transactions and idempotent imports.
-- JSON integration, input validation, timezone conversion and HTTP failure handling.
-- PHPUnit kernel testing against a real Drupal database; Drupal coding standards through PHPCS.
-- Docker Compose, Composer dependency locking, GitHub Actions and pull-request workflow.
+| Skill | What it does | Implementation paths |
+| --- | --- | --- |
+| Drupal 10/11 custom modules and PHP OOP | Defines the module, content type and imported fields | `lifeos_sync/lifeos_sync.info.yml`, `lifeos_sync/config/install/node.type.lifeos_item.yml` |
+| Form API and configuration | Edits feed URL/interval with permission checks and schema | `lifeos_sync/src/Form/SettingsForm.php`, `lifeos_sync/config/schema/lifeos_sync.schema.yml`, `lifeos_sync/lifeos_sync.permissions.yml` |
+| Dependency injection and Drush | Shares services between Drupal and a CLI import command | `lifeos_sync/lifeos_sync.services.yml`, `lifeos_sync/src/Drush/Commands/LifeosSyncCommands.php` |
+| Entity/Field APIs and Views | Updates nodes and supplies the upcoming page/block | `lifeos_sync/src/Importer.php`, `lifeos_sync/config/install/views.view.lifeos_upcoming.yml` |
+| Cron, Queue API, locks and transactions | Schedules snapshots and retries idempotent record imports | `lifeos_sync/lifeos_sync.module`, `lifeos_sync/src/SyncManager.php`, `lifeos_sync/src/Plugin/QueueWorker/LifeosSyncWorker.php` |
+| JSON and HTTP integration | Bounds requests, validates records and converts timezones | `lifeos_sync/src/FeedClient.php`, `lifeos_sync/src/FeedNormalizer.php` |
+| PHPUnit and Drupal coding standards | Exercises a real Drupal database and checks code style | `lifeos_sync/tests/src/Kernel/ImporterTest.php`, `phpcs.xml.dist` |
+| Reproducible demos and CI | Boots fictional content and tests both Drupal majors | `Dockerfile`, `docker-compose.yml`, `scripts/smoke.sh`, `.github/workflows/ci.yml` |
 
 Licensed under [GPL-2.0-or-later](LICENSE.txt).
