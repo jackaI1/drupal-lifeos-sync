@@ -26,6 +26,10 @@ class ImporterTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
+    // Drupal 11 sets root before setup; Drupal 10 needs its bootstrap cwd back.
+    if (!isset($this->root)) {
+      chdir(static::getDrupalRoot());
+    }
     parent::setUp();
     $this->installEntitySchema('user');
     $this->installEntitySchema('node');
