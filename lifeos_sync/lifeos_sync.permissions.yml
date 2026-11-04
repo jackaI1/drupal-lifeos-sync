@@ -1,0 +1,4 @@
+administer lifeos sync:
+  title: 'Administer LifeOS Sync'
+  description: 'Choose the public feed fetched by the server and its sync interval.'
+  restrict access: true

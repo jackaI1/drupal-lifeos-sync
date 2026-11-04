@@ -1,0 +1,266 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.lifeos_item
+    - field.storage.node.field_lifeos_course
+    - field.storage.node.field_lifeos_when
+    - field.storage.node.field_lifeos_kind
+  module:
+    - node
+    - datetime
+    - user
+    - lifeos_sync
+id: lifeos_upcoming
+label: 'Upcoming deadlines'
+module: views
+description: 'Published upcoming coursework deadlines imported from LifeOS.'
+tag: LifeOS
+base_table: node_field_data
+base_field: nid
+display:
+  default:
+    id: default
+    display_title: Default
+    display_plugin: default
+    position: 0
+    display_options:
+      title: 'Upcoming deadlines'
+      fields:
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: Coursework
+          exclude: false
+          element_label_colon: true
+          settings:
+            link_to_entity: true
+          type: string
+          click_sort_column: value
+          hide_empty: false
+          delta_limit: 0
+          delta_offset: 0
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        field_lifeos_course:
+          id: field_lifeos_course
+          table: node__field_lifeos_course
+          field: field_lifeos_course
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: Course
+          exclude: false
+          element_label_colon: true
+          settings:
+            link_to_entity: false
+          type: string
+          click_sort_column: value
+          hide_empty: false
+          delta_limit: 0
+          delta_offset: 0
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        field_lifeos_when:
+          id: field_lifeos_when
+          table: node__field_lifeos_when
+          field: field_lifeos_when
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: Due
+          exclude: false
+          element_label_colon: true
+          settings:
+            timezone_override: ''
+            format_type: medium
+          type: datetime_default
+          click_sort_column: value
+          hide_empty: false
+          delta_limit: 0
+          delta_offset: 0
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+      pager:
+        type: mini
+        options:
+          items_per_page: 10
+      exposed_form:
+        type: basic
+      access:
+        type: perm
+        options:
+          perm: 'access content'
+      cache:
+        type: none
+      empty:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          plugin_id: text_custom
+          empty: true
+          content: 'No upcoming deadlines. Run LifeOS Sync or check the feed.'
+          tokenize: false
+      sorts:
+        field_lifeos_when_value:
+          id: field_lifeos_when_value
+          table: node__field_lifeos_when
+          field: field_lifeos_when_value
+          plugin_id: datetime
+          order: ASC
+          granularity: second
+      arguments: {  }
+      filters:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          entity_type: node
+          entity_field: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
+          exposed: false
+        type:
+          id: type
+          table: node_field_data
+          field: type
+          entity_type: node
+          entity_field: type
+          plugin_id: bundle
+          value:
+            lifeos_item: lifeos_item
+          group: 1
+          exposed: false
+        field_lifeos_kind_value:
+          id: field_lifeos_kind_value
+          table: node__field_lifeos_kind
+          field: field_lifeos_kind_value
+          plugin_id: string
+          operator: '='
+          value: task
+          group: 1
+          exposed: false
+        field_lifeos_when_value:
+          id: field_lifeos_when_value
+          table: node__field_lifeos_when
+          field: field_lifeos_when_value
+          plugin_id: datetime
+          operator: '>='
+          value:
+            min: ''
+            max: ''
+            value: now
+            type: offset
+          group: 1
+          exposed: false
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+      style:
+        type: table
+        options:
+          columns:
+            title: title
+            field_lifeos_course: field_lifeos_course
+            field_lifeos_when: field_lifeos_when
+          default: '-1'
+          info: {  }
+          override: true
+          sticky: false
+          empty_table: false
+      row:
+        type: fields
+      query:
+        type: views_query
+        options:
+          disable_sql_rewrite: false
+          distinct: false
+      relationships: {  }
+      header: {  }
+      footer: {  }
+  page_1:
+    id: page_1
+    display_title: Page
+    display_plugin: page
+    position: 1
+    display_options:
+      path: upcoming-deadlines
+  block_1:
+    id: block_1
+    display_title: Block
+    display_plugin: block
+    position: 2
+    display_options:
+      block_description: 'Upcoming deadlines'
+      defaults:
+        pager: false
+        style: false
+        fields: false
+      pager:
+        type: some
+        options:
+          items_per_page: 5
+          offset: 0
+      style:
+        type: default
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: true
+      fields:
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: false
+          element_label_colon: true
+          settings:
+            link_to_entity: true
+          type: string
+          click_sort_column: value
+          hide_empty: false
+          delta_limit: 0
+          delta_offset: 0
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        field_lifeos_when:
+          id: field_lifeos_when
+          table: node__field_lifeos_when
+          field: field_lifeos_when
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: false
+          element_label_colon: true
+          settings:
+            timezone_override: ''
+            format_type: medium
+          type: datetime_default
+          click_sort_column: value
+          hide_empty: false
+          delta_limit: 0
+          delta_offset: 0
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false

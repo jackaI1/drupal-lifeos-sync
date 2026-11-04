@@ -1,0 +1,56 @@
+{
+  "name": "jackalai/drupal-lifeos-sync-demo",
+  "description": "Reproducible Drupal site for the LifeOS Sync custom module",
+  "type": "project",
+  "license": "GPL-2.0-or-later",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  ],
+  "require": {
+    "php": ">=8.3",
+    "composer/installers": "^2.3",
+    "drupal/core-composer-scaffold": "^10.3 || ^11",
+    "drupal/core-recommended": "^10.3 || ^11",
+    "drush/drush": "^13"
+  },
+  "require-dev": {
+    "drupal/core-dev": "^10.3 || ^11",
+    "drupal/coder": "^8.3"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "drupal/core-composer-scaffold": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "php-http/discovery": true,
+      "symfony/runtime": true,
+      "phpstan/extension-installer": true,
+      "php-tuf/composer-integration": true
+    },
+    "sort-packages": true,
+    "platform": {
+      "php": "8.3.30"
+    }
+  },
+  "extra": {
+    "drupal-scaffold": {
+      "locations": {
+        "web-root": "web/"
+      }
+    },
+    "installer-paths": {
+      "web/core": [
+        "type:drupal-core"
+      ],
+      "web/modules/contrib/{$name}": [
+        "type:drupal-module"
+      ],
+      "web/themes/contrib/{$name}": [
+        "type:drupal-theme"
+      ]
+    }
+  }
+}

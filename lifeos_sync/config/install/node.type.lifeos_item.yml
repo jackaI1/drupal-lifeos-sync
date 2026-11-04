@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - lifeos_sync
+name: 'LifeOS item'
+type: lifeos_item
+description: 'Schedule items and coursework imported from a public feed.'
+help: 'Managed by LifeOS Sync. Edit the source feed to change imported fields.'
+new_revision: false
+preview_mode: 0
+display_submitted: false

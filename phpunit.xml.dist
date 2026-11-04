@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap.php" colors="true" failOnWarning="true">
+  <testsuites><testsuite name="LifeOS Sync"><directory>lifeos_sync/tests/src/Kernel</directory></testsuite></testsuites>
+  <php><env name="SIMPLETEST_DB" value="sqlite://localhost/:memory:"/><env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/></php>
+</phpunit>

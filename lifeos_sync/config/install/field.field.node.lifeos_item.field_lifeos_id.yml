@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_lifeos_id
+    - node.type.lifeos_item
+id: node.lifeos_item.field_lifeos_id
+field_name: field_lifeos_id
+entity_type: node
+bundle: lifeos_item
+label: 'Source ID'
+description: 'Imported from the LifeOS-shaped public feed.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

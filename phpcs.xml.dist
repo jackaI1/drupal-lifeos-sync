@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="LifeOS Sync">
+  <description>Drupal coding standards for the custom module.</description>
+  <file>lifeos_sync</file>
+  <file>tests</file>
+  <file>scripts/configure-demo.php</file>
+  <arg name="extensions" value="php,module,install,yml"/>
+  <rule ref="Drupal"/>
+  <rule ref="DrupalPractice"/>
+</ruleset>

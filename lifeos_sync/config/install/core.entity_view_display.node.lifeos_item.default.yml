@@ -1,0 +1,73 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.lifeos_item
+    - field.field.node.lifeos_item.field_lifeos_id
+    - field.field.node.lifeos_item.field_lifeos_kind
+    - field.field.node.lifeos_item.field_lifeos_when
+    - field.field.node.lifeos_item.field_lifeos_end
+    - field.field.node.lifeos_item.field_lifeos_course
+    - field.field.node.lifeos_item.field_lifeos_location
+    - field.field.node.lifeos_item.field_lifeos_status
+  module:
+    - datetime
+    - user
+id: node.lifeos_item.default
+targetEntityType: node
+bundle: lifeos_item
+mode: default
+content:
+  field_lifeos_kind:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_lifeos_when:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_lifeos_end:
+    type: datetime_default
+    label: above
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_lifeos_course:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_lifeos_location:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_lifeos_status:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 5
+    region: content
+hidden:
+  field_lifeos_id: true
+  links: true

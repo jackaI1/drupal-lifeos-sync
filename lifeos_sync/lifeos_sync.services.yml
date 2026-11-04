@@ -1,0 +1,14 @@
+services:
+  lifeos_sync.normalizer:
+    class: Drupal\lifeos_sync\FeedNormalizer
+  lifeos_sync.feed_client:
+    class: Drupal\lifeos_sync\FeedClient
+    arguments: ['@http_client', '@lifeos_sync.normalizer']
+  lifeos_sync.importer:
+    class: Drupal\lifeos_sync\Importer
+    arguments: ['@entity_type.manager', '@lock']
+  lifeos_sync.manager:
+    class: Drupal\lifeos_sync\SyncManager
+    arguments: ['@config.factory', '@state', '@datetime.time', '@queue', '@lock', '@database', '@lifeos_sync.feed_client']
+  Drupal\lifeos_sync\SyncManager:
+    alias: lifeos_sync.manager

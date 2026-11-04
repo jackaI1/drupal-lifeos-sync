@@ -1,0 +1,12 @@
+{
+  "timeZone": "America/Toronto",
+  "schedule": [
+    {"id":"demo-workshop","title":"Nanomaterials workshop","start":{"dateTime":"2099-11-06T10:45:00-05:00"},"end":{"dateTime":"2099-11-06T11:30:00-05:00"},"location":"Demo laboratory","status":"confirmed"},
+    {"id":"demo-office-hours","title":"Design studio office hours","start":{"dateTime":"2099-11-07T14:30:00-05:00"},"end":{"dateTime":"2099-11-07T15:00:00-05:00"},"location":"Demo studio","status":"confirmed"}
+  ],
+  "tasks": [
+    {"id":"demo-report","title":"Thin-film lab report","status":"todo","courseCode":"DEMO 201","courseTitle":"Fictional Nanomaterials","dueAt":"2099-11-08T23:59:00-05:00","dueDate":"2099-11-08","estimatedMinutes":90},
+    {"id":"demo-design","title":"Sensor design proposal","status":"in_progress","courseCode":"DEMO 202","courseTitle":"Fictional Design Studio","dueAt":null,"dueDate":"2099-11-10","estimatedMinutes":120},
+    {"id":"demo-reading","title":"Surface science reading","status":"todo","courseCode":"DEMO 203","courseTitle":"Fictional Surface Science","dueAt":"2099-11-12T17:00:00-05:00","dueDate":"2099-11-12","estimatedMinutes":45}
+  ]
+}

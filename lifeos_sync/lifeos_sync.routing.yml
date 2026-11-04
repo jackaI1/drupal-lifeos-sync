@@ -1,0 +1,7 @@
+lifeos_sync.settings:
+  path: '/admin/config/services/lifeos-sync'
+  defaults:
+    _form: '\Drupal\lifeos_sync\Form\SettingsForm'
+    _title: 'LifeOS Sync'
+  requirements:
+    _permission: 'administer lifeos sync'
