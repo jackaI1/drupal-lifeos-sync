@@ -52,19 +52,13 @@ final class FeedNormalizer {
             throw new \InvalidArgumentException('Schedule end must follow start.');
           }
         }
-        elseif (!empty($record['dueAt'])) {
-          $when = $this->dateTime($record['dueAt']);
-        }
-        elseif (!empty($record['dueDate'])) {
-          $date = $record['dueDate'];
-          if (!is_string($date) || !preg_match('/^\d{4}-\d{2}-\d{2}$/D', $date)) {
-            throw new \InvalidArgumentException('dueDate must be YYYY-MM-DD.');
+        else {
+          // Validate both optional fields even when dueAt takes precedence.
+          $when = $this->dateOnly($record['dueDate'] ?? NULL, $timezone);
+          $due_at = $record['dueAt'] ?? NULL;
+          if ($due_at !== NULL && $due_at !== '') {
+            $when = $this->dateTime($due_at);
           }
-          $parsed = \DateTimeImmutable::createFromFormat('!Y-m-d', $date, $timezone);
-          if (!$parsed || $parsed->format('Y-m-d') !== $date) {
-            throw new \InvalidArgumentException('Invalid dueDate.');
-          }
-          $when = $parsed->setTime(23, 59, 59)->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s');
         }
         $items[$id] = [
           'id' => $id,
@@ -93,11 +87,31 @@ final class FeedNormalizer {
   }
 
   /**
+   * Converts an optional calendar date into the end of its local day.
+   */
+  private function dateOnly(mixed $value, \DateTimeZone $timezone): ?string {
+    if ($value === NULL || $value === '') {
+      return NULL;
+    }
+    if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2}$/D', $value)) {
+      throw new \InvalidArgumentException('dueDate must be YYYY-MM-DD.');
+    }
+    $parsed = \DateTimeImmutable::createFromFormat('!Y-m-d', $value, $timezone);
+    if (!$parsed || $parsed->format('Y-m-d') !== $value) {
+      throw new \InvalidArgumentException('Invalid dueDate.');
+    }
+    return $parsed->setTime(23, 59, 59)->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s');
+  }
+
+  /**
    * Requires an explicit offset and rejects PHP's permissive date rollover.
    */
   private function dateTime(mixed $value): string {
     if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/D', $value)) {
       throw new \InvalidArgumentException('Expected an ISO 8601 timestamp with offset.');
+    }
+    if (preg_match('/[+-](\d{2}):(\d{2})$/D', $value, $offset) && ((int) $offset[1] > 23 || (int) $offset[2] > 59)) {
+      throw new \InvalidArgumentException('Invalid timestamp offset.');
     }
     try {
       $date = new \DateTimeImmutable($value);

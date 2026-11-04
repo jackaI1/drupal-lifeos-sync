@@ -1,4 +1,4 @@
-FROM php:8.3-apache-bookworm
+FROM php:8.3-apache-trixie
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git unzip libpng-dev libjpeg62-turbo-dev libfreetype6-dev libicu-dev libzip-dev libsqlite3-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -11,6 +11,8 @@ RUN sed -ri 's!/var/www/html!/var/www/html/web!g' /etc/apache2/sites-available/*
     && printf '<Directory /var/www/html/web>\nAllowOverride All\nRequire all granted\n</Directory>\n' > /etc/apache2/conf-available/drupal.conf \
     && a2enconf drupal \
     && printf 'memory_limit=256M\n' > /usr/local/etc/php/conf.d/drupal.ini
+# Drupal 11 requires SQLite 3.45+; fail the build early on an unsuitable base.
+RUN php -r 'if (version_compare(SQLite3::version()["versionString"], "3.45", "<")) { throw new RuntimeException("Drupal 11 requires SQLite 3.45+"); }'
 WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --prefer-dist --no-interaction --no-progress

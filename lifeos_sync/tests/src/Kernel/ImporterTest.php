@@ -138,6 +138,74 @@ class ImporterTest extends KernelTestBase {
   }
 
   /**
+   * Oversized and malformed feeds cannot partially populate the queue.
+   */
+  public function testFeedBoundsAndAtomicValidation(): void {
+    $invalid = $this->fixture();
+    $invalid['tasks'][2]['dueAt'] = 'invalid';
+    $mock = new MockHandler([
+      new Response(200, [], str_repeat('x', 1048577)),
+      new Response(200, [], json_encode($invalid)),
+      new Response(302, ['Location' => 'https://example.com/redirected']),
+    ]);
+    $this->container->set('http_client', new Client(['handler' => HandlerStack::create($mock)]));
+    $this->container->get('config.factory')->getEditable('lifeos_sync.settings')
+      ->set('feed_url', 'https://example.com/feed.json')->save();
+    $manager = $this->container->get('lifeos_sync.manager');
+    $queue = $this->container->get('queue')->get('lifeos_sync');
+    for ($attempt = 0; $attempt < 3; $attempt++) {
+      try {
+        $manager->enqueue(TRUE);
+        $this->fail('An invalid snapshot must fail.');
+      }
+      catch (\RuntimeException | \InvalidArgumentException $exception) {
+        $this->assertSame(0, (int) $queue->numberOfItems());
+        $this->assertNull($this->container->get('state')->get('lifeos_sync.last_queued'));
+      }
+    }
+  }
+
+  /**
+   * Falsey malformed dates must not clear a previously imported deadline.
+   */
+  public function testMalformedOptionalDates(): void {
+    $normalizer = $this->container->get('lifeos_sync.normalizer');
+    foreach (['dueAt', 'dueDate'] as $key) {
+      foreach ([FALSE, 0, [], '0'] as $invalid) {
+        $feed = $this->fixture();
+        $feed['tasks'][0]['dueAt'] = NULL;
+        $feed['tasks'][0]['dueDate'] = NULL;
+        $feed['tasks'][0][$key] = $invalid;
+        try {
+          $normalizer->normalize($feed);
+          $this->fail('Malformed optional dates must reject the snapshot.');
+        }
+        catch (\InvalidArgumentException $exception) {
+          $this->assertNotSame('', $exception->getMessage());
+        }
+      }
+    }
+  }
+
+  /**
+   * ISO timestamp offsets cannot contain a 24-hour offset or invalid minutes.
+   */
+  public function testInvalidOffset(): void {
+    $normalizer = $this->container->get('lifeos_sync.normalizer');
+    foreach (['+24:00', '-25:00', '+05:60'] as $offset) {
+      $feed = $this->fixture();
+      $feed['tasks'][0]['dueAt'] = '2099-11-08T12:00:00' . $offset;
+      try {
+        $normalizer->normalize($feed);
+        $this->fail('Invalid timezone offsets must reject the snapshot.');
+      }
+      catch (\InvalidArgumentException $exception) {
+        $this->assertNotSame('', $exception->getMessage());
+      }
+    }
+  }
+
+  /**
    * The actual Views page/block exclude events, closed tasks and past dates.
    */
   public function testUpcomingViews(): void {
