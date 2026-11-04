@@ -40,6 +40,11 @@ Task statuses: `todo`, `in_progress`, `blocked`, `done`, `completed`, `cancelled
 
 ## How it works
 
+I use Drupal content records so the imported deadlines can appear in ordinary
+Views pages and blocks. I keep cron and the immediate import command on the
+same queue and importer so both entry points apply the same validation and
+update rules. This is a local demonstration, rather than a hosted service.
+
 ```text
 Public JSON → FeedClient → FeedNormalizer → SyncManager → Drupal database queue
                                                          ↓
