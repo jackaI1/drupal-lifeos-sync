@@ -1,0 +1,5 @@
+lifeos_sync.settings:
+  title: 'LifeOS Sync'
+  description: 'Configure the public feed and minimum sync interval.'
+  parent: system.admin_config_services
+  route_name: lifeos_sync.settings

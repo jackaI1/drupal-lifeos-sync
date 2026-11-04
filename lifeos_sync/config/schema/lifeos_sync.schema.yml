@@ -1,0 +1,10 @@
+lifeos_sync.settings:
+  type: config_object
+  label: 'LifeOS Sync settings'
+  mapping:
+    feed_url:
+      type: string
+      label: 'Public JSON feed URL'
+    sync_interval:
+      type: integer
+      label: 'Minimum interval between fetches in seconds'

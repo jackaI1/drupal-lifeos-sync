@@ -1,0 +1,20 @@
+services:
+  drupal:
+    build: .
+    ports:
+      - '127.0.0.1:8080:80'
+    environment:
+      LIFEOS_FEED_URL: http://feed/lifeos-public.json
+      DEMO_ADMIN_PASSWORD: ${DEMO_ADMIN_PASSWORD:-demo-local-only}
+    volumes:
+      - drupal-data:/var/www/html/.demo
+      - drupal-sites:/var/www/html/web/sites/default
+    depends_on:
+      - feed
+  feed:
+    image: httpd:2.4-alpine
+    volumes:
+      - ./fixtures:/usr/local/apache2/htdocs:ro
+volumes:
+  drupal-data:
+  drupal-sites:

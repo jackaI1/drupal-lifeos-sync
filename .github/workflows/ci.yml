@@ -1,0 +1,59 @@
+name: Drupal module CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  module:
+    name: Drupal ${{ matrix.core }} / PHP 8.3
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        core: ['^10.3', '^11']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd, pdo_sqlite, sqlite3, mbstring, intl
+          coverage: none
+          tools: composer:v2
+      - name: Resolve the selected supported Drupal major
+        run: |
+          composer require --no-update "drupal/core-recommended:${{ matrix.core }}" "drupal/core-composer-scaffold:${{ matrix.core }}"
+          composer require --dev --no-update "drupal/core-dev:${{ matrix.core }}"
+          composer update --no-interaction --no-progress --prefer-dist
+          mkdir -p web/modules/custom
+          ln -s "$PWD/lifeos_sync" web/modules/custom/lifeos_sync
+      - name: Drupal coding standards
+        run: vendor/bin/phpcs --standard=phpcs.xml.dist
+      - name: Kernel tests
+        run: vendor/bin/phpunit -c phpunit.xml.dist
+      - name: Full Drupal install and HTTP smoke
+        run: scripts/smoke.sh
+  docker-demo:
+    name: Docker demo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and start the demo
+        run: docker compose up --build -d
+      - name: Verify the public deadlines page and idempotent import
+        run: |
+          for attempt in $(seq 1 90); do
+            if curl --fail --silent http://127.0.0.1:8080/upcoming-deadlines -o /tmp/deadlines.html; then break; fi
+            sleep 2
+          done
+          grep -q 'Thin-film lab report' /tmp/deadlines.html
+          grep -q 'block-lifeos-demo-deadlines' /tmp/deadlines.html
+          docker compose exec -T drupal vendor/bin/drush lifeos:sync --force
+          docker compose exec -T drupal vendor/bin/drush php:eval 'if ((int) \Drupal::entityQuery("node")->accessCheck(FALSE)->condition("type", "lifeos_item")->count()->execute() !== 5) { throw new \RuntimeException("Expected five nodes."); }'
+      - name: Bounded failure diagnostics
+        if: failure()
+        run: docker compose logs --tail=60
+      - name: Stop demo fixtures
+        if: always()
+        run: docker compose down --volumes --remove-orphans

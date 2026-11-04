@@ -1,0 +1,9 @@
+/vendor/
+/web/
+/recipes/
+/.editorconfig
+/.phpunit.cache/
+/.phpunit.result.cache
+/.superpowers/
+/.demo/
+/.env

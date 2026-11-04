@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Cron integration for the LifeOS public-feed importer.
+ */
+
+/**
+ * Implements hook_cron().
+ */
+function lifeos_sync_cron(): void {
+  try {
+    \Drupal::service('lifeos_sync.manager')->enqueue();
+  }
+  catch (\Throwable $exception) {
+    // The exception chain can contain a URL or response body. Keep logs public.
+    \Drupal::logger('lifeos_sync')->error('LifeOS feed sync failed. Check the public feed format and availability; existing content was retained.');
+  }
+}

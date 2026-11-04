@@ -1,0 +1,10 @@
+name: LifeOS Sync
+type: module
+description: Imports a public LifeOS-shaped feed through cron and Drupal Queue API.
+package: LifeOS
+core_version_requirement: ^10.3 || ^11
+configure: lifeos_sync.settings
+dependencies:
+  - drupal:node
+  - drupal:datetime
+  - drupal:views
